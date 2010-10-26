@@ -73,23 +73,8 @@ class HackMatch(object):
         return matches
 
     def extractFeatures(self, item, doc_words, fields=[]):
-        s_tokens = []
-        for f in fields:
-            tokens = None
-            try:
-                tokens = word_tokenize(item[f])
-            except (KeyError, TypeError):
-                pass
-                
-            if tokens:
-                s_tokens.extend(tokens)
-        
-        #s_features = []        
-        #for token in doc_words:
-        #    if token in s_tokens:
-        #        s_features.append(1)
-        #    else:
-        #        s_features.append(0)
+        tokeniter = (item[f] for f in fields if f in item)
+        s_tokens = map(list.extend, tokeniter)
         s_features = [token in s_tokens for token in doc_words]
         return s_features if sum(s_features) > self.COMPLETENESS_THRESHOLD else None
 
