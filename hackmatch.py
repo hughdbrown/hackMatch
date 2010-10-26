@@ -43,8 +43,8 @@ class HackMatch(object):
     def printMatches(self, matches, num_matches):
         for n, m in matches.items():
             print n
-            all_matches = sorted(m.items(), key=itemgetter(1), reverse=True)
-            top_matched = all_matches[:num_matches]
+            all_matches = sorted(m.items(), key=itemgetter(1))
+            top_matched = all_matches[-num_matches:]
             for item, score in top_matches:
                 print "\t%(item)s :: %(score)s" % locals()
                 # print "'%s' '%s' %s" % (n.translate(string.maketrans("",""), string.punctuation), item.translate(string.maketrans("",""), string.punctuation), score)
@@ -54,19 +54,17 @@ class HackMatch(object):
         """
         do ranking
         """
-        base = {}
-        for item in base_data:
-            base[item[base_name_field]] = self.extractFeatures(item, doc_words, fields)
-            
+        base = dict((item[base_name_field], self.extractFeatures(item, doc_words, fields)) for item in base_data)
+
         matches = defaultdict(dict)
         for match_item in match_data:
             match_features = self.extractFeatures(match_item, doc_words, fields)
-
+            d = matches[match_item[match_name_field]]
             for base_item, base_item_features in base.items(): # actually do the comparison
                 if not base_item_features or not match_features:
-                    matches[match_item[match_name_field]][base_item] = 0.0
+                    d[base_item] = 0.0
                 else:
-                    matches[match_item[match_name_field]][base_item] = self.distance(base_item_features, match_features)
+                    d[base_item] = self.distance(base_item_features, match_features)
                 if self.DEBUG:
                     print "%s :: %s = %s " % (match_item[match_name_field], base_item, self.distance(base_item_features, match_features))
 
