@@ -8,9 +8,6 @@ Created by Hilary Mason, Chris Wiggins, and Evan Korth.
 Copyright (c) 2010 hackNY. All rights reserved.
 """
 
-import sys, os
-import csv
-import string
 from collections import defaultdict
 from optparse import OptionParser
 from nltk.tokenize import *
