@@ -82,12 +82,13 @@ class HackMatch(object):
             if tokens:
                 s_tokens.extend(tokens)
         
-        s_features = []        
-        for token in doc_words:
-            if token in s_tokens:
-                s_features.append(1)
-            else:
-                s_features.append(0)
+        #s_features = []        
+        #for token in doc_words:
+        #    if token in s_tokens:
+        #        s_features.append(1)
+        #    else:
+        #        s_features.append(0)
+        s_features = [token in s_tokens for token in doc_words]
         
         if sum(s_features) <= self.COMPLETENESS_THRESHOLD:
             return None
