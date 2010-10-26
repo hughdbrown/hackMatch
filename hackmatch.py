@@ -49,8 +49,7 @@ class HackMatch(object):
                 print "\t%(item)s :: %(score)s" % locals()
                 # print "'%s' '%s' %s" % (n.translate(string.maketrans("",""), string.punctuation), item.translate(string.maketrans("",""), string.punctuation), score)
             print '\n'
-            
-        
+
     def doRanking(self, base_data, match_data, doc_words, fields=[], base_name_field='Company', match_name_field='Student Name'):
         """
         do ranking
@@ -92,11 +91,7 @@ class HackMatch(object):
         #    else:
         #        s_features.append(0)
         s_features = [token in s_tokens for token in doc_words]
-        
-        if sum(s_features) <= self.COMPLETENESS_THRESHOLD:
-            return None
-            
-        return s_features
+        return s_features if sum(s_features) > self.COMPLETENESS_THRESHOLD else None
 
     def defineFeatures(self, data, fields=[]):
         """
