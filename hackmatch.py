@@ -16,6 +16,7 @@ from optparse import OptionParser
 from nltk.tokenize import *
 from nltk.corpus import stopwords
 from hcluster import jaccard
+from operator import itemgetter
 
 # startups: Name,E-mail,Company,In NYC,Funding,Site,Blog,Twitter,Num Employees,Environment,Project,Skills,Misc
 # students: Student Name,e-mail,University,Major,Degree,Graduation Date,Site,Blog,Twitter,Facebook,Project,Skills,Misc
@@ -26,7 +27,7 @@ class HackMatch(object):
     COMPLETENESS_THRESHOLD = 4 # num of words necessary to match
     
     def __init__(self, student_file, startup_file, num_matches=3, distance=jaccard):
-        self.stopwords = self.get_stopwords()
+        self.stopwords = set(self.get_stopwords())
         self.distance = distance
         
         student_data = self.parseCSV(student_file)
@@ -42,8 +43,10 @@ class HackMatch(object):
     def printMatches(self, matches, num_matches):
         for n, m in matches.items():
             print n
-            for item, score in sorted(m.items(), key=lambda(i,c):(-c, i))[:num_matches]:
-                print "\t%s :: %s" % (item, score)
+            all_matches = sorted(m.items(), key=itemgetter(1), reverse=True)
+            top_matched = all_matches[:num_matches]
+            for item, score in top_matches:
+                print "\t%(item)s :: %(score)s" % locals()
                 # print "'%s' '%s' %s" % (n.translate(string.maketrans("",""), string.punctuation), item.translate(string.maketrans("",""), string.punctuation), score)
             print '\n'
             
@@ -99,31 +102,28 @@ class HackMatch(object):
         """
         define the global bag of words features
         """
-        ngram_freq = {}
+        ngram_freq = defaultdict(int)
         
-        for d in data:
-            for r in d:
-                for f in fields:
-                    tokens = None
-                    try:
-                        tokens = word_tokenize(r[f])
-                    except (KeyError, TypeError):
-                        pass
-                    
-                    if tokens:
-                        for t in [t.lower() for t in tokens if t.lower() not in self.stopwords]:
-                            t = t.strip('.')
-                            ngram_freq[t] = ngram_freq.get(t, 0) + 1
+        featureiter = (
+            (d, r, f)
+            for d in data
+            for r in d
+            for f in fields
+            if f in r
+        )
+        for d, r, f in featureiter:
+            tokeniter = (t.lower() for t in word_tokenize(r[f]))
+            legaliter = (t.strip('.') for t in tokeniter if t not in self.stopwords)
+            for t in legaliter:
+                ngram_freq[t] += 1
                             
-        ngram_freq = dict([(w,c) for w,c in ngram_freq.items() if c > 1])
+        ngram_freq = dict((w,c) for w,c in ngram_freq.items() if c > 1)
         if self.DEBUG:
             print "Global vocabulary: %s" % len(ngram_freq)        
         return ngram_freq
     
     def get_stopwords(self):
-        sw = stopwords.words('english')
-        sw.extend([',', '\xe2', '.', ')', '(', ':', "'s", "'nt", '\x99', '\x86', '\xae', '\x92'])
-        return sw
+        return stopwords.words('english') + [',', '\xe2', '.', ')', '(', ':', "'s", "'nt", '\x99', '\x86', '\xae', '\x92']
             
     def parseCSV(self, filename):
         """
