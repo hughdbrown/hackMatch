@@ -83,14 +83,14 @@ class HackMatch(object):
         ngram_freq = defaultdict(int)
         
         featureiter = (
-            (d, r, f)
+            r[f]
             for d in data
             for r in d
             for f in fields
             if f in r
         )
-        for d, r, f in featureiter:
-            tokeniter = (t.lower() for t in word_tokenize(r[f]))
+        for field in featureiter:
+            tokeniter = (t.lower() for t in word_tokenize(field))
             legaliter = (t.strip('.') for t in tokeniter if t not in self.stopwords)
             for t in legaliter:
                 ngram_freq[t] += 1
