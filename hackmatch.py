@@ -133,7 +133,6 @@ class HackMatch(object):
             print "Global vocabulary: %s" % len(ngram_freq)        
         return ngram_freq
 
-
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option("-n", "--number", action="store", type="int", dest="num_matches", default=10, help="number of results to return")
