@@ -1,0 +1,2 @@
+"Name","E-mail","Company","In NYC","Funding","Site","Blog","Twitter","Num Employees","Environment","Project","Skills","Misc"
+"Foobar Corp","x@foo.com","Foobar Corp","Y","Y",http://www.foo.com,"","",100,"linux windows oracle","risk-management finance","python java C#","linux windows python facebook"

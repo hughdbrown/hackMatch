@@ -1,0 +1,2 @@
+Student Name,e-mail,University,Major,Degree,Graduation Date,Site,Blog,Twitter,Facebook,Project,Skills,Misc
+Hugh,hughdbrown@yahoo.com,Toronto,AI,AI,1990,iwebthereforeiam.com,"","","","risk-management windows","python oracle","finance"
