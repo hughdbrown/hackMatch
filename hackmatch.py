@@ -21,6 +21,16 @@ from csv import DictReader
 # startups: Name,E-mail,Company,In NYC,Funding,Site,Blog,Twitter,Num Employees,Environment,Project,Skills,Misc
 # students: Student Name,e-mail,University,Major,Degree,Graduation Date,Site,Blog,Twitter,Facebook,Project,Skills,Misc
 
+# Hack
+# I'd like to write this:
+#   return reduce(list.extend, list_of_lists)
+# but it generates an error I don't get
+def list_reducer(list_iter):
+    result = []
+    for l in list_iter:
+        result.extend(l)
+    return result
+
 def get_stopwords():
     """
     get_stopwords: generate a list of stop words
@@ -95,7 +105,7 @@ class HackMatch(object):
         """
         fields = fields or []
         tokeniter = (item_dict[f] for f in fields if f in item_dict)
-        s_tokens = reduce(list.extend, tokeniter)
+        s_tokens = list_reducer(tokeniter)
         s_features = [token in s_tokens for token in doc_words]
         return s_features if sum(s_features) > self.COMPLETENESS_THRESHOLD else None
 
