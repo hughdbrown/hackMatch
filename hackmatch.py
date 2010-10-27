@@ -26,7 +26,7 @@ def get_stopwords():
     get_stopwords: generate a list of stop words
     """
     return stopwords.words('english') + [',', '\xe2', '.', ')', '(', ':', "'s", "'nt", '\x99', '\x86', '\xae', '\x92']
-        
+
 def parse_csv(filename):
     """
     parse_csv: parses the CSV file to a dict
@@ -42,11 +42,9 @@ def print_matches(matches, num_matches):
         print key
         all_matches = sorted(value_dict.items(), key=itemgetter(1))
         top_matches = all_matches[-num_matches:]
-        # pylint: disable=W0612
         for item, score in top_matches:
             print "\t%(item)s :: %(score)s" % locals()
             # print "'%s' '%s' %s" % (n.translate(string.maketrans("",""), string.punctuation), item.translate(string.maketrans("",""), string.punctuation), score)
-        # pylint: enable=W0612
         print '\n'
 
 class HackMatch(object):
@@ -71,7 +69,6 @@ class HackMatch(object):
 
         print_matches(matches, num_matches)
     
-    # pylint: disable=R0913
     def do_ranking(self, base_data, match_data, doc_words, fields=None, base_name_field='Company', match_name_field='Student Name'):
         """
         do ranking
@@ -90,7 +87,6 @@ class HackMatch(object):
                     temp_dict[base_item] = self.distance(base_item_features, match_features)
                 if self.DEBUG:
                     print "%s :: %s = %s " % (match_item[match_name_field], base_item, self.distance(base_item_features, match_features))
-
         return matches
 
     def extract_features(self, item_dict, doc_words, fields=None):
@@ -122,12 +118,11 @@ class HackMatch(object):
             legaliter = (word.strip('.') for word in tokeniter if word not in self.stopwords)
             for legal_word in legaliter:
                 ngram_freq[legal_word] += 1
-                            
         ngram_freq = dict((word, word_count) for word, word_count in ngram_freq.items() if word_count > 1)
         if self.DEBUG:
             print "Global vocabulary: %s" % len(ngram_freq)        
         return ngram_freq
-    
+
 
 if __name__ == '__main__':
     parser = OptionParser()
